@@ -3,6 +3,7 @@ To do:
 
 1. Create a table of the input txt [X]
 2. Determine classification y [X]
+3. adjusting weights done [X]
 '''
 
 #functions
@@ -70,38 +71,68 @@ tdata_table_col = len(tdata_table[0])
 
 
 for td_row in range(0, tdata_table_row):
+    print("ROW - ", td_row+1)
     w_index = 0
     a = 0
+    # Step 2 a - compute perceptron value
     for td_col in range(0, (tdata_table_col-1)):
         a = a + (tdata_table[td_row][td_col]*w[w_index])
+        print("w", w[w_index])
         w_index += 1
         if(td_col == (tdata_table_col-2)):
+            print("w", w[w_index])
             a = a + (b * w[w_index])
-    print("a", a)
-    # determine classification, y
-    y = determineY(a,t)
-    print("y",y)
+    #print("a", a)
+    # Step 2 b - determine classification, y
+        y = determineY(a,t)
+        #print("y",y)
 
-    if td_row != 0:
-        #print("adjust weight")
-    #adjust weights
-        for i in range(0,tdata_table_row):
-            w_counter = 0
-            for j in range(0, (tdata_table_col-1)):
-                w[w_counter] = w[w_counter] + (r*tdata_table[i][j]*(tdata_table[i][2] - y))
+        # Step 2 c - adjust weights
+        if td_row != 0:                             # we would be solving weights after the first row
+            for i in range(0,tdata_table_row):
+                w_counter = 0
 
-                #temp
-                if td_row == 1:
-                    print("adjusted weight",w[w_counter])
-                w_counter += 1
+                # check values
+                #print("ROW - ", i+1)
+                # print("Y = ", y)
+                # print("Z = ",tdata_table[i][2])
+                # print("R = ", r)
+                # print("A = ", a)
+                # print()
 
-                #print("data",tdata_table[i][j])
-            #print("w",w,end="")
-        print()
+                for j in range(0, (tdata_table_col-1)):
+                    w[w_counter] = w[w_counter] + (r*tdata_table[i][j]*(tdata_table[i][2] - y))
+
+                    # check values
+                    # print("X = ",tdata_table[i][j])
+                    # print("W = ",w[w_counter], w_counter) 
+                    # print()
+
+                    if w_counter == 1:
+                        w_counter += 1
+                        #print("old W = ",w[w_counter],w_counter) 
+                        w[w_counter] = w[w_counter] + (r*b*(tdata_table[i][2] - y))
+
+                        #check values
+                        # print("X = ",tdata_table[i][j])
+                        # print("W = ",w[w_counter], w_counter) 
+                        # print()
+
+                    w_counter += 1
+
+                    
+            
+                print("New weights")
+                print("w[0]",w[0])
+                print("w[1]",w[1])
+                print("w[2]",w[2])
+                print()
+
+            print()
 
 
     
-print("test")
+#print("test")
 
 
 
