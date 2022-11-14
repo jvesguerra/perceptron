@@ -46,7 +46,7 @@ def weight_converge(all_arr,current_arr):
 
 #FILE READING
 
-input_text = open("input.txt","r")
+input_text = open("in3.txt","r")
 
 input_array = []
 training_data = []
@@ -151,8 +151,8 @@ while(not_converge != 0):
         w_index = 0
         a = 0
         # Step 2 a - compute perceptron value
-        for td_col in range(0, (tdata_table_col-1)):
-            a = a + (tdata_table[td_row][td_col]*w[w_index])
+        for td_col in range(0, (tdata_table_col-1)):            # w[w_index] = w0
+            a = a + (tdata_table[td_row][td_col]*w[w_index])    # tdata_table[td_row][td_col] = x0, x1 and so on
             w_index += 1
             if(td_col == (tdata_table_col-2)):
                 a = a + (b * w[w_index])
@@ -182,7 +182,8 @@ while(not_converge != 0):
     iteration_num+=1
 
     # End of each iteration
-    
+
+    #check if converged
     not_converge = weight_converge(all_w,temp_w)
     all_w.clear()
     all_w.append(temp_w)
@@ -193,10 +194,6 @@ while(not_converge != 0):
         for temp in range(pos_b,range_w_index):
             final_table[0][temp] = temp_w[temp_w_index]
             temp_w_index+= 1
-    
-
-
-    #print("Not Converge = ", not_converge)
 output.close()
 
         
