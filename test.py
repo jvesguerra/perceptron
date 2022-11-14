@@ -1,12 +1,4 @@
-arr1 = [0,0,0]
+count = 0
 
-arr2 = []
-
-arr2.append(arr1)
-
-print(arr2)
-
-arr2.append(arr1)
-
-
-print(arr2)
+for i in range(0,3):
+    print(count)

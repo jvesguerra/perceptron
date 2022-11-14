@@ -15,6 +15,9 @@ If you have 3 columns, for each iteration you would have a total of 9 columns
 '''
 
 #functions
+from tabulate import tabulate
+
+
 def determineY(a,t):
     y = 0
     if a > t:
@@ -72,16 +75,45 @@ input_array.clear()
 # DECLARATIONS
 row_len = len(training_data)    #4
 column_len = len(training_data[0])-1 # do not change
-build_column_len = int(len(training_data[0])/2)             #3
+build_column_len = int(len(training_data[0])/2)             #3 Ex. 0 0 0
 tdata_array = []
 not_converge = 1
 tdata_table = []
 all_w = []
+headers = []
 final_tbl_col = build_column_len * 2 + 3     # total number of columns for each iteration
 pos_y = final_tbl_col-2
 pos_a = final_tbl_col-3
+pos_b = build_column_len
 iteration_num = 1
+range_w_index = pos_b + 3
 
+#temp
+#print(len(training_data[0]))
+#print(training_data[0])
+
+
+#create headers
+cond1 = build_column_len-1
+cond2 = build_column_len*2
+headers_index = 0
+for header in range(0,final_tbl_col-2):
+    format_x = "x" + str(header)
+    format_w = "w" + str(headers_index)
+    if header < cond1:
+        headers.append(format_x)
+    elif header == cond1:
+        headers.append("b")
+    elif header > cond1 and header < cond2-1:
+        headers.append(format_w)
+        headers_index += 1
+    elif header == cond2-1:
+        headers.append("wb")
+    else:
+        headers.append("a")
+        headers.append("y")
+        headers.append("z")
+#print(headers)
 
 # create w array and tdata_table
 tdata_table = [[0 for col in range(0,build_column_len)] for row in range(0,row_len)]
@@ -108,8 +140,13 @@ for i in range(0,row_len):
 tdata_table_row = len(tdata_table)  # reusable for final iteration
 tdata_table_col = len(tdata_table[0])
 
+output = open("output.txt", "w")  # write mode
+
+#print(tdata_table_row)
+
 while(not_converge != 0):
-    print("Iteration ",iteration_num, ":")
+#while(iteration_num != 2):
+    #print("Iteration ",iteration_num, ":")
     for td_row in range(0, tdata_table_row):
         w_index = 0
         a = 0
@@ -123,17 +160,25 @@ while(not_converge != 0):
         y = determineY(a,t)
 
         #append to table
-        final_table[td_row][pos_y-1] = y
-        final_table[td_row][pos_a-1] = a
-
+        final_table[td_row][pos_y] = y
+        final_table[td_row][pos_a] = a
 
         # Step 2 c - adjust weights
-        if td_row != 0:                             # we would be solving weights after the first row
-            w = adjust_weight(td_row,w,a,b,y)
-            temp_w = w.copy()
-            all_w.append(temp_w)
-            
-        print(final_table)
+        w = adjust_weight(td_row,w,a,b,y)
+        temp_w = w.copy()
+        all_w.append(temp_w)
+
+        temp_w_index = 0
+        if td_row < tdata_table_row-1:
+            for temp in range(pos_b,range_w_index):
+                final_table[td_row+1][temp] = temp_w[temp_w_index]
+                temp_w_index+= 1
+
+    # Print output
+    format_string = "Iteration " + str(iteration_num) + " :\n"
+    output.write(format_string)
+    output.write(tabulate(final_table,headers))
+    output.write("\n")
     iteration_num+=1
 
     # End of each iteration
@@ -142,8 +187,18 @@ while(not_converge != 0):
     all_w.clear()
     all_w.append(temp_w)
 
+    # for the start of the next table
+    if td_row < tdata_table_row:
+        temp_w_index = 0
+        for temp in range(pos_b,range_w_index):
+            final_table[0][temp] = temp_w[temp_w_index]
+            temp_w_index+= 1
+    
+
 
     #print("Not Converge = ", not_converge)
+output.close()
+
         
 
 
