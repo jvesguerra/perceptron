@@ -1,26 +1,15 @@
 '''
-To do:
-
-1. Create a table of the input txt [X]
-2. Determine classification y [X]
-3. adjusting weights done [X]
-4. STEP 2 DONE [X]
-5. FILL THE FINAL TABLE WITH THE OUTPUTS [X]
-6. PRINT THE TABLE NICELY
-7. WRITE TO OUTPUT
-
-Notes:
-If you have 3 columns, for each iteration you would have a total of 9 columns
-3 x, 3 w, a, b,  y
+Joshua V. Esguerra
+CMSC 170 WX3L
+Exercise 06 Perceptron
 '''
 
 #functions
 from tabulate import tabulate
 
-
 def determineY(a,t):
     y = 0
-    if a > t:
+    if a >= t:
         y = 1
     return y
 
@@ -45,8 +34,7 @@ def weight_converge(all_arr,current_arr):
     return not_converge
 
 #FILE READING
-
-input_text = open("in3.txt","r")
+input_text = open("in1.txt","r")
 
 input_array = []
 training_data = []
@@ -86,14 +74,10 @@ pos_y = final_tbl_col-2
 pos_a = final_tbl_col-3
 pos_b = build_column_len
 iteration_num = 1
-range_w_index = pos_b + 3
-
-#temp
-#print(len(training_data[0]))
-#print(training_data[0])
+range_w_index = pos_b * 2
 
 
-#create headers
+# create headers for the table
 cond1 = build_column_len-1
 cond2 = build_column_len*2
 headers_index = 0
@@ -113,7 +97,6 @@ for header in range(0,final_tbl_col-2):
         headers.append("a")
         headers.append("y")
         headers.append("z")
-#print(headers)
 
 # create w array and tdata_table
 tdata_table = [[0 for col in range(0,build_column_len)] for row in range(0,row_len)]
@@ -124,13 +107,15 @@ final_table = [[0 for col in range(0,final_tbl_col)] for row in range(0,row_len)
 for row in range(0,row_len):
     column_index = 0
     for column in range(0,column_len):
-        #if(column == 0 or column == 2 or column == 4): # if module num % 2 == 0
         if(column % 2 == 0):
-            #tdata_array.append(training_data[row][column])
             tdata_table[row][column_index] = int(training_data[row][column])
+            final_table[row][column_index] = int(training_data[row][column])
             column_index += 1
             if column == 4:    
+                #tdata_table[row][final_tbl_col-1] = int(training_data[row][column])
                 final_table[row][final_tbl_col-1] = int(training_data[row][column])
+
+#tdata table is the x0, x1, z
 
 # put b
 for i in range(0,row_len):
@@ -138,23 +123,18 @@ for i in range(0,row_len):
 
 # for the process
 tdata_table_row = len(tdata_table)  # reusable for final iteration
-tdata_table_col = len(tdata_table[0])
-
+tdata_table_col = len(tdata_table[0])   #3
 output = open("output.txt", "w")  # write mode
 
-#print(tdata_table_row)
-
 while(not_converge != 0):
-#while(iteration_num != 2):
-    #print("Iteration ",iteration_num, ":")
     for td_row in range(0, tdata_table_row):
         w_index = 0
         a = 0
         # Step 2 a - compute perceptron value
-        for td_col in range(0, (tdata_table_col-1)):            # w[w_index] = w0
+        for td_col in range(0, (tdata_table_col-1)):            # gets the value of x0, x1
             a = a + (tdata_table[td_row][td_col]*w[w_index])    # tdata_table[td_row][td_col] = x0, x1 and so on
             w_index += 1
-            if(td_col == (tdata_table_col-2)):
+            if(td_col == (tdata_table_col-2)):                  # gets value of b * w     
                 a = a + (b * w[w_index])
         # Step 2 b - determine classification, y,a #y is index 7 and a is index 6
         y = determineY(a,t)
@@ -167,8 +147,10 @@ while(not_converge != 0):
         w = adjust_weight(td_row,w,a,b,y)
         temp_w = w.copy()
         all_w.append(temp_w)
-
         temp_w_index = 0
+
+        print("Iteration : ", iteration_num)
+        print(temp_w)
         if td_row < tdata_table_row-1:
             for temp in range(pos_b,range_w_index):
                 final_table[td_row+1][temp] = temp_w[temp_w_index]
